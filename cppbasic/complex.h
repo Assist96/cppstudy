@@ -2,6 +2,7 @@
 #define __COMPLEX__//未声明过即声明
 //--------------------------------------------------
 #include<cmath>
+#include<string>
 class ostream;
 class complex;
 complex& __doapl(complex* ths,const complex& r);
@@ -10,6 +11,7 @@ class complex
 {
 private:
     double re,im;
+    std::string t;
     friend complex& __doapl(complex*,const complex &);//友元函数 可以
     /* data */
 public:
@@ -19,6 +21,7 @@ public:
     complex& operator+=(const complex&);//参数传递最好传递引用
     double real() const{ return re;}//const 说明 该函数不改变变量 
     double imag() const{ return im;}
+    std::string  str() const{ return t;}
     // ~complex();
 };
 //---------------------------------------------------
@@ -32,7 +35,9 @@ inline complex&
 complex::operator +=(const complex& r){
     return __doapl(this,r);
 }
-
+inline std::string str(const complex& x){
+    return x.str();
+}
 inline double
 imag(const complex& x){
     return x.imag();

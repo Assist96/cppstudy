@@ -10,7 +10,6 @@ public :
         return ((double )m_numerator/m_denominator);
     }
 };
-
 int main(){
     Fraction f(3,5);
     double a=f+4;

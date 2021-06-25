@@ -40,6 +40,16 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "ctime": "c"
+        "ctime": "c",
+        "list": "cpp",
+        "slist": "cpp",
+        "queue": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "complex": "cpp"
     }
 }

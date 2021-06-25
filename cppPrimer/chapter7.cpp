@@ -1,6 +1,6 @@
 #include<string>
 #include<iostream>
-#include<istream>
+#include<vector>
 using namespace std;
 // struct Sales_data{
 //     Sales_data()=default;
@@ -195,6 +195,7 @@ public:
 
 
 class Screen{
+    friend class Window_mgr;
 public:
 typedef string::size_type pos;
 //using pos=string::size_type;
@@ -203,6 +204,7 @@ private:
     pos cursor=0;
     pos width=0,height=0;
     mutable size_t access_ctr=0;
+    void do_display(std::ostream &os) const {os<<contents;}
 public:
     Screen()=default;
     Screen(pos ht,pos wd,char c):height(ht),width(wd),contents(ht*wd,c){}
@@ -211,6 +213,15 @@ public:
     Screen &move(pos r,pos c);
     void some_member()const{
         ++access_ctr;
+    }
+    Screen &set(char);
+    Screen &set(pos,pos,char);
+    Screen &display(std::ostream &os){
+        do_display(os);return *this;
+    }
+    pos size() const ;
+    const Screen &display(std::ostream &os) const{
+        do_display(os);return *this;
     }
 };
 inline 
@@ -224,7 +235,97 @@ char Screen::get(pos r,pos c)const {
     pos row =width*r;
     return contents[row+c];
 }
+inline
+Screen &Screen::set(char c){
+    contents[cursor]=c;
+    return *this;
+}
+inline Screen &Screen::set(pos r,pos col ,char c){
+    contents[width*r+col]=c;
+    return *this;
+}
+Screen::pos Screen::size() const {
+    return  height*width;
+}
+class Window_mgr{
+public:
+    using ScreenIndex=std::vector<Screen>::size_type;
+    void clear(ScreenIndex);
+    ScreenIndex addScreen(const Screen&);
+private:
+    std::vector<Screen> screens{Screen(24,80,' ')};
+};
+void Window_mgr::clear(ScreenIndex i){
+    Screen &s=screens[i];
+    s.contents=string( s.height*s.width,' ');
+}
+Window_mgr::ScreenIndex Window_mgr::addScreen(const Screen &s){
+    screens.push_back(s);
+    return screens.size()-1;
+}
+class X;
+class Y;
+class X{
+private:
+    Y *y;
+};
+class Y{
+private:
+    X x;
+};
 
+
+
+class delegate_Sales_data{
+private:
+    std::string bookNo;
+    unsigned units_sold=0;
+    double revenue=0.0;
+    double avg_price() const;
+public:
+    delegate_Sales_data(string  s,unsigned u,double n):bookNo(s),units_sold(u),revenue(u*n){ cout<<"ctor 1"<<endl;}
+    delegate_Sales_data():delegate_Sales_data("",0,0){cout<<"ctor2"<<endl;}
+    delegate_Sales_data(string s):delegate_Sales_data(s,0,0){cout<<"ctor3"<<endl;}
+    delegate_Sales_data(std::istream &is):delegate_Sales_data( ){
+        double price=0;
+        is>>bookNo>>units_sold>>price;
+        revenue=units_sold*price;
+    cout<<"ctor4"<<endl;}
+};
+
+class NoDefault{
+public:
+    NoDefault(int i){cout<<i<<endl;}
+};
+class C{
+public:
+    C(int i=0):nd(i){};    
+private:
+    NoDefault nd;
+};
+
+class Account{
+public:
+    void calculate(){amount+=amount*interestRate;}
+    static double rate(){return  interestRate;}
+    static void rate(double);
+private:
+    string owner;
+    double amount;
+    static double  interestRate;
+    static double initRate();
+};
+void Account::rate(double newRate){
+    interestRate=newRate;
+}
 int main(){
-
+//     Screen s1(10,20,'c');
+//    const Screen s2(11,21,'b');
+//     auto  b=s1.display(cout);
+//     auto  d=s2.display(cout);
+    Screen myScreen(5,5,'X');
+    myScreen.move(4,0).set('#').display(cout);
+    cout<<"\n";
+    myScreen.display(cout);
+    cout<<"\n";
 }

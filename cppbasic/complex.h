@@ -21,6 +21,7 @@ public:
     complex& operator+=(const complex&);//参数传递最好传递引用
     double real() const{ return re;}//const 说明 该函数不改变变量 
     double imag() const{ return im;}
+    // double imag()  { return im;}
     std::string  str() const{ return t;}
     // ~complex();
 };
